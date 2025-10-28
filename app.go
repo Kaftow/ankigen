@@ -2,17 +2,22 @@ package main
 
 import (
 	"context"
-	"fmt"
+	"ankigen/internal/extractor"
 )
 
 // App struct
 type App struct {
 	ctx context.Context
+	extractorManager *extractor.ExtractorManager
 }
 
 // NewApp creates a new App application struct
 func NewApp() *App {
-	return &App{}
+	em := extractor.NewExtractorManager()
+	em.RegisterAll()
+	return &App{
+		extractorManager: em,
+	}
 }
 
 // startup is called when the app starts. The context is saved
@@ -21,7 +26,16 @@ func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
 }
 
-// Greet returns a greeting for the given name
-func (a *App) Greet(name string) string {
-	return fmt.Sprintf("Hello %s, It's show time!", name)
+// ExtractText extracts text from a file at the given path
+func (a *App) ExtractText(path string) (string, error) {
+	text, err := a.extractorManager.Extract(path)
+	if err != nil {
+		return "", err
+	}
+	return text, nil
+}
+
+// GetSupportedExtensions returns all supported file extensions
+func (a *App) GetSupportedExtensions() []string {
+	return a.extractorManager.SupportedExtensions()
 }
