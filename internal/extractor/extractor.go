@@ -35,9 +35,16 @@ func (m *ExtractorManager) Register(e Extractor) {
 }
 
 // RegisterAll registers multiple extractors at once.
-func (m *ExtractorManager) RegisterAll(extractors ...Extractor) {
+func (m *ExtractorManager) RegisterAll() {
 	m.mu.Lock()
 	defer m.mu.Unlock()
+	extractors := []Extractor{
+		NewTXTExtractor(),
+		NewPDFExtractor(),
+		// NewDocxExtractor(),
+		// NewHTMLExtractor(),
+		// NewMarkdownExtractor()
+	}
 	for _, e := range extractors {
 		for _, ext := range e.SupportedExtensions() {
 			m.extractors[ext] = e
