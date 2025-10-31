@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"ankigen/internal/extractor"
+	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
 // App struct
@@ -38,4 +39,14 @@ func (a *App) ExtractText(path string) (string, error) {
 // GetSupportedExtensions returns all supported file extensions
 func (a *App) GetSupportedExtensions() []string {
 	return a.extractorManager.SupportedExtensions()
+}
+
+func (a *App) SelectFile() (string, error) {
+    file, err := runtime.OpenFileDialog(a.ctx, runtime.OpenDialogOptions{
+        Title: "Select a file",
+    })
+    if err != nil {
+        return "", err
+    }
+    return file, nil
 }
