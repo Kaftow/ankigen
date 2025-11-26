@@ -9,15 +9,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@kangc/v-md-editor": "^2.3.18",
-    "codemirror": "^5.65.13",
-    "highlight.js": "^11.11.1",
+    "md-editor-v3": "^6.2.0",
     "naive-ui": "^2.43.1",
     "vue": "^3.2.37"
   },
   "devDependencies": {
-    "@babel/types": "^7.18.10",
-    "@types/codemirror": "^5.60.17",
     "@vitejs/plugin-vue": "^6.0.1",
     "typescript": "^5.9.3",
     "vite": "^7.1.12",

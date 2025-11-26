@@ -18,8 +18,8 @@ function onFileLoaded(payload: { path: string; content: string }) {
 </script>
 
 <template>
-  <div style="padding: 16px; display: grid; gap: 12px">
-    <div style="display: flex; gap: 12px; align-items: center">
+  <div class="file-reader">
+    <div class="controls">
       <format-selector @update:format="onFormatUpdate" />
       <file-picker
         :format="selectedFormat || undefined"
@@ -27,12 +27,39 @@ function onFileLoaded(payload: { path: string; content: string }) {
       />
     </div>
 
-    <div v-if="!rawContent" style="margin-top: 20px">
+    <div v-if="!rawContent" class="empty">
       <n-card>Open a supported file to view and edit Markdown content.</n-card>
     </div>
 
-    <div v-else>
+    <div v-else class="editor-wrap">
       <page-editor v-model="rawContent" />
     </div>
   </div>
 </template>
+
+<style scoped>
+.file-reader {
+  height: 100%;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 0;
+}
+
+.controls {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.empty {
+  margin-top: 20px;
+}
+
+.editor-wrap {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+</style>
