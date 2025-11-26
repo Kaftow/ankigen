@@ -1,11 +1,27 @@
+declare module "@kangc/v-md-editor/lib/codemirror-editor" {
+  import type { Plugin, DefineComponent } from "vue";
+  const VMdEditor: Plugin &
+    DefineComponent & {
+      Codemirror?: any;
+      use?: (theme: any, options?: any) => void;
+    };
+  export default VMdEditor;
+}
+
+declare module "@kangc/v-md-editor/*" {
+  const mod: any;
+  export default mod;
+}
+
+declare module "codemirror";
+
 declare module "@kangc/v-md-editor" {
-  import { App } from "vue";
+  import { Plugin, DefineComponent } from "vue";
 
-  interface VMdEditor {
-    use(theme: any, options?: any): void;
-  }
-
-  const VMdEditor: VMdEditor;
+  const VMdEditor: Plugin &
+    DefineComponent & {
+      use?: (theme: any, options?: any) => void;
+    };
   export default VMdEditor;
 }
 
