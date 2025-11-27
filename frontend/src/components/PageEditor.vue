@@ -23,8 +23,13 @@ watch(internal, (v) => emit("update:modelValue", v));
 
 <template>
   <n-card class="editor-card">
-    <div class="editor-inner">
-      <MdEditor v-model="internal" class="mdeditor-fill" />
+    <div class="editor-wrapper">
+      <n-scrollbar
+        trigger="always"
+        :scrollbar-style="{ right: '0px', width: '8px', opacity: 1 }"
+      >
+        <MdEditor v-model="internal" class="mdeditor" />
+      </n-scrollbar>
     </div>
   </n-card>
 </template>
@@ -37,18 +42,26 @@ watch(internal, (v) => emit("update:modelValue", v));
   min-height: 0;
 }
 
-.editor-inner {
-  flex: 1;
-  min-height: 0;
+.editor-wrapper {
+  width: 100%;
+  max-height: 600px;
   overflow: hidden;
 }
 
-.mdeditor-fill {
+::v-deep(.n-scrollbar) {
+  width: 100%;
   height: 100%;
+  overflow-y: auto;
 }
 
-::v-deep .md-editor {
-  height: 100% !important;
-  min-height: 0 !important;
+.mdeditor {
+  width: 100%;
+  min-height: 400px;
+}
+
+::v-deep(.md-editor) {
+  width: 100% !important;
+  overflow: visible !important;
+  min-height: 400px !important;
 }
 </style>
