@@ -9,4 +9,5 @@ export function setupStore(app: App) {
 
 export default pinia;
 
-export { useFileManagerStore } from "./modules/fileManager";
+export { useFileStore } from "./modules/fileStore";
+

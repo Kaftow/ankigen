@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
-import { useFileManagerStore } from "@/stores/modules/fileManager";
+import { useFileStore } from "@/stores";
 
 const emits = defineEmits<{
   (e: "fileLoaded", payload: { filename: string; content: string }): void;
 }>();
 
-const fileStore = useFileManagerStore();
+const fileStore = useFileStore();
 const loading = computed(() => fileStore.loadingFile);
 
 async function openFile() {

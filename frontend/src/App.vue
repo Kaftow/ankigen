@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import FileReader from "./views/FileReader.vue";
+import FileLoader from "@/views/FileLoader.vue";
 </script>
 
 <template>
   <n-layout class="page-container">
     <n-layout-content class="page-content">
-      <file-reader />
+      <file-loader />
     </n-layout-content>
   </n-layout>
 </template>

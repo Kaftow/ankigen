@@ -3,9 +3,9 @@ import { ref, computed } from "vue";
 import FileEmptyCard from "@/components/FileEmptyCard.vue";
 import FilePicker from "../components/FilePicker.vue";
 import PageEditor from "../components/PageEditor.vue";
-import { useFileManagerStore } from "../stores/modules/fileManager";
+import { useFileStore } from "@/stores";
 
-const fileStore = useFileManagerStore();
+const fileStore = useFileStore();
 
 function onFileLoaded(payload: { path?: string; content?: string } | null) {
   if (!payload) {

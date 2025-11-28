@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 import { ref, computed } from "vue";
 import * as fileService from "../../services/fileService";
 
-export const useFileManagerStore = defineStore("fileManager", () => {
+export const useFileStore = defineStore("fileStore", () => {
   const supportedFormats = ref<string[]>([]);
   const lastFile = ref<{ filename: string; content: string } | null>(null);
   const loadingSupportedFormats = ref(false);

@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { computed, onMounted } from "vue";
-import { useFileManagerStore } from "@/stores/modules/fileManager";
+import { useFileStore } from "@/stores";
 
-const fileStore = useFileManagerStore();
+const fileStore = useFileStore();
 
 onMounted(() => {
   fileStore.loadSupportedFormats();
