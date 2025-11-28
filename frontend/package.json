@@ -11,6 +11,7 @@
   "dependencies": {
     "md-editor-v3": "^6.2.0",
     "naive-ui": "^2.43.1",
+    "pinia": "^3.0.4",
     "vue": "^3.2.37"
   },
   "devDependencies": {

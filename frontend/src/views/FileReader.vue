@@ -1,38 +1,47 @@
 <script setup lang="ts">
-import { ref } from "vue";
-import FormatSelector from "../components/FormatSelector.vue";
+import { ref, computed } from "vue";
+import FileEmptyCard from "@/components/FileEmptyCard.vue";
 import FilePicker from "../components/FilePicker.vue";
 import PageEditor from "../components/PageEditor.vue";
+import { useFileManagerStore } from "../stores/modules/fileManager";
 
-const selectedFormat = ref<string | null>(null);
-const rawContent = ref<string>("");
+const fileStore = useFileManagerStore();
 
-function onFormatUpdate(format: string) {
-  selectedFormat.value = format || null;
+function onFileLoaded(payload: { path?: string; content?: string } | null) {
+  if (!payload) {
+    fileStore.lastFile = null;
+    return;
+  }
+  fileStore.lastFile = {
+    filename: payload.path ?? "",
+    content: typeof payload.content === "string" ? payload.content : "",
+  };
 }
 
-function onFileLoaded(payload: { path: string; content: string }) {
-  rawContent.value =
-    typeof payload?.content === "string" ? payload.content : "";
-}
+const editorContent = computed<string>({
+  get() {
+    return fileStore.lastFile?.content ?? "";
+  },
+  set(value: string) {
+    if (fileStore.lastFile) {
+      fileStore.lastFile = { ...fileStore.lastFile, content: value };
+    } else {
+      fileStore.lastFile = { filename: "", content: value };
+    }
+  },
+});
 </script>
 
 <template>
   <div class="file-reader">
     <div class="controls">
-      <format-selector @update:format="onFormatUpdate" />
-      <file-picker
-        :format="selectedFormat || undefined"
-        @fileLoaded="onFileLoaded"
-      />
+      <file-picker @fileLoaded="onFileLoaded" />
     </div>
 
-    <div v-if="!rawContent" class="empty">
-      <n-card>Open a supported file to view and edit Markdown content.</n-card>
-    </div>
+    <FileEmptyCard v-if="!fileStore.lastFile || !fileStore.lastFile.content" />
 
     <div v-else class="editor-wrap">
-      <page-editor v-model="rawContent" />
+      <page-editor v-model="editorContent" />
     </div>
   </div>
 </template>
