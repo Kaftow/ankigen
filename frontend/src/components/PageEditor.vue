@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { ref, watch } from "vue";
-import { MdEditor } from "md-editor-v3";
+import { MdEditor, MdPreview } from "md-editor-v3";
 import "md-editor-v3/lib/style.css";
 
-const props = withDefaults(defineProps<{ modelValue?: string }>(), {
-  modelValue: "",
-});
+const props = withDefaults(
+  defineProps<{ modelValue?: string; previewMode?: boolean }>(),
+  { modelValue: "", previewMode: false },
+);
 
 const emit = defineEmits<{
   (e: "update:modelValue", value: string): void;
@@ -28,7 +29,13 @@ watch(internal, (v) => emit("update:modelValue", v));
         trigger="always"
         :scrollbar-style="{ right: '0px', width: '8px', opacity: 1 }"
       >
-        <MdEditor v-model="internal" class="mdeditor" />
+        <!-- Toggle between editor and preview -->
+        <template v-if="!props.previewMode">
+          <MdEditor v-model="internal" class="mdeditor" />
+        </template>
+        <template v-else>
+          <MdPreview :modelValue="internal" class="mdeditor" />
+        </template>
       </n-scrollbar>
     </div>
   </n-card>
