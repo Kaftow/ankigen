@@ -8,7 +8,7 @@ import { useFileStore, useWorkflowStore } from "@/stores";
 const fileStore = useFileStore();
 const workflowStore = useWorkflowStore();
 
-const isEmpty = computed(() => !fileStore.lastFile?.content);
+const isEmpty = computed(() => !fileStore.hasFile);
 
 function setStepCompleted(value: boolean) {
   workflowStore.setStepCompleted(value);
@@ -17,31 +17,30 @@ function setStepCompleted(value: boolean) {
 function onFileLoaded(payload: { filename?: string; content?: string } | null) {
   console.log("File loaded:", payload);
   if (!payload?.content || !payload?.filename) {
-    fileStore.lastFile = null;
+    fileStore.clearFile();
+    setStepCompleted(false);
     return;
   }
-  fileStore.lastFile = {
-    filename: payload.filename,
-    content: payload.content,
-  };
+  fileStore.filename = payload.filename;
+  fileStore.rawContent = payload.content;
   setStepCompleted(true);
 }
 
 const editorContent = computed<string>({
   get() {
-    return fileStore.lastFile?.content ?? "";
+    return fileStore.rawContent ?? "";
   },
   set(value: string) {
     if (!value) {
       // remove file when empty and notify parent that "next" is disabled
-      fileStore.lastFile = null;
+      fileStore.clearFile();
       setStepCompleted(false);
       return;
     }
-    if (fileStore.lastFile) {
-      fileStore.lastFile = { ...fileStore.lastFile, content: value };
+    if (fileStore.rawContent) {
+      fileStore.rawContent = value;
     } else {
-      fileStore.lastFile = { filename: "", content: value };
+      fileStore.rawContent = value;
     }
     setStepCompleted(true);
   },

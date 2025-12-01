@@ -4,7 +4,8 @@ import * as fileService from "../../services/fileService";
 
 export const useFileStore = defineStore("fileStore", () => {
   const supportedFormats = ref<string[]>([]);
-  const lastFile = ref<{ filename: string; content: string } | null>(null);
+  const filename = ref<string | null>(null);
+  const rawContent = ref<string | null>(null);
   const loadingSupportedFormats = ref(false);
   const loadingFile = ref(false);
 
@@ -24,11 +25,18 @@ export const useFileStore = defineStore("fileStore", () => {
     loadingFile.value = true;
     try {
       const res = await fileService.pickAndRead();
-      lastFile.value = res;
-      return res;
+      if (res) {
+        filename.value = res.filename;
+        rawContent.value = res.content;
+        return res;
+      }
+      filename.value = null;
+      rawContent.value = null;
+      return null;
     } catch (e) {
       console.error("openFile failed", e);
-      lastFile.value = null;
+      filename.value = null;
+      rawContent.value = null;
       return null;
     } finally {
       loadingFile.value = false;
@@ -36,14 +44,18 @@ export const useFileStore = defineStore("fileStore", () => {
   }
 
   function clearFile() {
-    lastFile.value = null;
+    filename.value = null;
+    rawContent.value = null;
   }
 
-  const hasFile = computed(() => lastFile.value !== null);
+  const hasFile = computed(
+    () => filename.value !== null && rawContent.value !== null,
+  );
 
   return {
     supportedFormats,
-    lastFile,
+    filename,
+    rawContent,
     loadingSupportedFormats,
     loadingFile,
     loadSupportedFormats,
