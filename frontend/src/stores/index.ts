@@ -10,4 +10,4 @@ export function setupStore(app: App) {
 export default pinia;
 
 export { useFileStore } from "./modules/fileStore";
-
+export { useWorkflowStore } from "./modules/workflowStore";

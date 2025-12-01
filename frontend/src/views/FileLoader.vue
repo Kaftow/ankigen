@@ -1,21 +1,30 @@
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { computed } from "vue";
 import FileEmptyCard from "@/components/FileEmptyCard.vue";
-import FilePicker from "../components/FilePicker.vue";
-import PageEditor from "../components/PageEditor.vue";
-import { useFileStore } from "@/stores";
+import FilePicker from "@/components/FilePicker.vue";
+import PageEditor from "@/components/PageEditor.vue";
+import { useFileStore, useWorkflowStore } from "@/stores";
 
 const fileStore = useFileStore();
+const workflowStore = useWorkflowStore();
 
-function onFileLoaded(payload: { path?: string; content?: string } | null) {
-  if (!payload) {
+const isEmpty = computed(() => !fileStore.lastFile?.content);
+
+function setStepCompleted(value: boolean) {
+  workflowStore.setStepCompleted(value);
+}
+
+function onFileLoaded(payload: { filename?: string; content?: string } | null) {
+  console.log("File loaded:", payload);
+  if (!payload?.content || !payload?.filename) {
     fileStore.lastFile = null;
     return;
   }
   fileStore.lastFile = {
-    filename: payload.path ?? "",
-    content: typeof payload.content === "string" ? payload.content : "",
+    filename: payload.filename,
+    content: payload.content,
   };
+  setStepCompleted(true);
 }
 
 const editorContent = computed<string>({
@@ -23,11 +32,18 @@ const editorContent = computed<string>({
     return fileStore.lastFile?.content ?? "";
   },
   set(value: string) {
+    if (!value) {
+      // remove file when empty and notify parent that "next" is disabled
+      fileStore.lastFile = null;
+      setStepCompleted(false);
+      return;
+    }
     if (fileStore.lastFile) {
       fileStore.lastFile = { ...fileStore.lastFile, content: value };
     } else {
       fileStore.lastFile = { filename: "", content: value };
     }
+    setStepCompleted(true);
   },
 });
 </script>
@@ -38,7 +54,7 @@ const editorContent = computed<string>({
       <file-picker @fileLoaded="onFileLoaded" />
     </div>
 
-    <FileEmptyCard v-if="!fileStore.lastFile || !fileStore.lastFile.content" />
+    <FileEmptyCard v-if="isEmpty" />
 
     <div v-else class="editor-wrap">
       <page-editor v-model="editorContent" />

@@ -1,12 +1,14 @@
 import { createApp } from "vue";
-import App from "./App.vue";
+import App from "@/App.vue";
+import router from "@/routers";
+import { setupStore } from "@/stores/index";
 import { MdEditor } from "md-editor-v3";
 import "md-editor-v3/lib/style.css";
 import naive from "naive-ui";
-import { setupStore } from "@/stores/index";
 
 const app = createApp(App);
-setupStore(app); 
+setupStore(app);
+app.use(router);
 app.use(naive);
 app.component("MdEditor", MdEditor as any);
 app.mount("#app");
