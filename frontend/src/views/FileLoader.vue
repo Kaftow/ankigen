@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, watchEffect } from "vue";
 import FileEmptyCard from "@/components/FileEmptyCard.vue";
 import FilePicker from "@/components/FilePicker.vue";
 import PageEditor from "@/components/PageEditor.vue";
@@ -10,41 +10,28 @@ const workflowStore = useWorkflowStore();
 
 const isEmpty = computed(() => !fileStore.hasFile);
 
-function setStepCompleted(value: boolean) {
-  workflowStore.setStepCompleted(value);
-}
+// Mark step completed when raw content is non-empty
+watchEffect(() => {
+  const content = fileStore.rawContent;
+  const stepCompleted = workflowStore.isStepCompleted;
+
+  // Only mark step completed if not already completed and content is non-empty
+  if (!stepCompleted && content && content.trim() !== "") {
+    workflowStore.setStepCompleted(true);
+  }
+});
 
 function onFileLoaded(payload: { filename?: string; content?: string } | null) {
   console.log("File loaded:", payload);
   if (!payload?.content || !payload?.filename) {
     fileStore.clearFile();
-    setStepCompleted(false);
     return;
   }
   fileStore.filename = payload.filename;
   fileStore.rawContent = payload.content;
-  setStepCompleted(true);
 }
 
-const editorContent = computed<string>({
-  get() {
-    return fileStore.rawContent ?? "";
-  },
-  set(value: string) {
-    if (!value) {
-      // remove file when empty and notify parent that "next" is disabled
-      fileStore.clearFile();
-      setStepCompleted(false);
-      return;
-    }
-    if (fileStore.rawContent) {
-      fileStore.rawContent = value;
-    } else {
-      fileStore.rawContent = value;
-    }
-    setStepCompleted(true);
-  },
-});
+const readOnlyContent = computed<string>(() => fileStore.rawContent ?? "");
 </script>
 
 <template>
@@ -56,7 +43,7 @@ const editorContent = computed<string>({
     <FileEmptyCard v-if="isEmpty" />
 
     <div v-else class="editor-wrap">
-      <page-editor v-model="editorContent" />
+      <page-editor v-model="readOnlyContent" :previewMode="true" />
     </div>
   </div>
 </template>

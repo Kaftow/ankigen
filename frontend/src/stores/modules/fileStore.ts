@@ -1,13 +1,18 @@
 import { defineStore } from "pinia";
-import { ref, computed } from "vue";
-import * as fileService from "../../services/fileService";
+import { ref, computed, watch } from "vue";
+import * as fileService from "@/services/fileService";
 
 export const useFileStore = defineStore("fileStore", () => {
   const supportedFormats = ref<string[]>([]);
   const filename = ref<string | null>(null);
   const rawContent = ref<string | null>(null);
+  const editedContent = ref<string | null>(null);
   const loadingSupportedFormats = ref(false);
   const loadingFile = ref(false);
+
+  watch(rawContent, (newVal) => {
+    editedContent.value = newVal;
+  });
 
   async function loadSupportedFormats() {
     loadingSupportedFormats.value = true;
@@ -56,6 +61,7 @@ export const useFileStore = defineStore("fileStore", () => {
     supportedFormats,
     filename,
     rawContent,
+    editedContent,
     loadingSupportedFormats,
     loadingFile,
     loadSupportedFormats,
