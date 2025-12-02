@@ -12,21 +12,21 @@ type Extractor interface {
 	Extract(path string) (string, error)
 }
 
-// ExtractorManager holds registered extractors and dispatches Extract calls.
-type ExtractorManager struct {
+// ExtractorService holds registered extractors and dispatches Extract calls.
+type ExtractorService struct {
 	mu         sync.RWMutex
 	extractors map[string]Extractor // key: extension (".txt", ".pdf", ...)
 }
 
-// NewExtractorManager creates an empty manager.
-func NewExtractorManager() *ExtractorManager {
-	return &ExtractorManager{
+// NewExtractorService creates an empty service.
+func NewExtractorService() *ExtractorService {
+	return &ExtractorService{
 		extractors: make(map[string]Extractor),
 	}
 }
 
-// Register adds an extractor to the manager for all its supported extensions.
-func (m *ExtractorManager) Register(e Extractor) {
+// Register adds an extractor to the service for all its supported extensions.
+func (m *ExtractorService) Register(e Extractor) {
 	m.mu.Lock()
 	defer m.mu.Unlock()
 	for _, ext := range e.SupportedExtensions() {
@@ -35,7 +35,7 @@ func (m *ExtractorManager) Register(e Extractor) {
 }
 
 // RegisterAll registers multiple extractors at once.
-func (m *ExtractorManager) RegisterAll() {
+func (m *ExtractorService) RegisterAll() {
 	m.mu.Lock()
 	defer m.mu.Unlock()
 	extractors := []Extractor{
@@ -53,7 +53,7 @@ func (m *ExtractorManager) RegisterAll() {
 }
 
 // SupportedExtensions returns a deduplicated slice of all supported extensions.
-func (m *ExtractorManager) SupportedExtensions() []string {
+func (m *ExtractorService) SupportedExtensions() []string {
 	m.mu.RLock()
 	defer m.mu.RUnlock()
 	result := make([]string, 0, len(m.extractors))
@@ -64,7 +64,7 @@ func (m *ExtractorManager) SupportedExtensions() []string {
 }
 
 // Extract selects the appropriate extractor by file extension and runs it.
-func (m *ExtractorManager) Extract(path string) (string, error) {
+func (m *ExtractorService) Extract(path string) (string, error) {
 	ext := filepath.Ext(path)
 	m.mu.RLock()
 	e, ok := m.extractors[ext]

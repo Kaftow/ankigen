@@ -2,7 +2,7 @@ import {
   GetSupportedExtensions,
   SelectFile,
   ExtractText,
-} from "../../wailsjs/go/main/App";
+} from "../../wailsjs/go/api/ExtractorAPI";
 
 export async function getSupportedExtensions(): Promise<string[]> {
   try {
