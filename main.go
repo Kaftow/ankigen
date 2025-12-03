@@ -15,7 +15,7 @@ var assets embed.FS
 
 func main() {
 	// Create an instance of the app structure
-	extractorAPI := api.NewExtractorAPI()
+	extractorAPI := api.NewExtractorAPI(10, 50)
 
 	// Create application with options
 	err := wails.Run(&options.App{
