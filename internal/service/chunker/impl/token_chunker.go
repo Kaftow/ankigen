@@ -1,6 +1,7 @@
 package impl
 
 import (
+	"ankigen/internal/service/chunker/types"
 	"github.com/pkoukk/tiktoken-go"
 	"github.com/sbt-zyq/tiktoken-go-loader" // offline loader
 )
@@ -26,10 +27,10 @@ func NewTokenChunker(maxTokens int, encodingName string) (*TokenChunker, error) 
 	}, nil
 }
 
-func (c *TokenChunker) Split(text string) ([]RawChunk, error) {
+func (c *TokenChunker) Split(text string) ([]types.RawChunk, error) {
 	// Convert input text into token IDs
 	tokens := c.encoding.Encode(text, nil, nil)
-	var chunks []RawChunk
+	var chunks []types.RawChunk
 	currentStart := 0
 
 	// Slice tokens into chunks
@@ -44,11 +45,11 @@ func (c *TokenChunker) Split(text string) ([]RawChunk, error) {
 		chunkLength := len([]rune(chunkText))
 
 		// Create RawChunk
-		chunks = append(chunks, RawChunk{
+		chunks = append(chunks, types.RawChunk{
 			Text:  chunkText,
 			Start: currentStart,
 			End:   currentStart + chunkLength,
-			Meta: map[string]interface{}{
+			Meta: map[string]any{
 				"start_token": i,
 				"end_token":   end,
 			},

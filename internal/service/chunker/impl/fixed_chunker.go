@@ -1,5 +1,7 @@
 package impl
 
+import "ankigen/internal/service/chunker/types"
+
 type FixedLengthChunker struct {
 	MaxChars int
 }
@@ -10,8 +12,8 @@ func NewFixedLengthChunker(maxChars int) *FixedLengthChunker {
 	}
 }
 
-func (c *FixedLengthChunker) Split(text string) ([]RawChunk, error) {
-	var chunks []RawChunk
+func (c *FixedLengthChunker) Split(text string) ([]types.RawChunk, error) {
+	var chunks []types.RawChunk
 
 	runes := []rune(text) // unicode-safe
 	for i := 0; i < len(runes); i += c.MaxChars {
@@ -20,11 +22,11 @@ func (c *FixedLengthChunker) Split(text string) ([]RawChunk, error) {
 			end = len(runes)
 		}
 
-		chunks = append(chunks, RawChunk{
+		chunks = append(chunks, types.RawChunk{
 			Text:  string(runes[i:end]),
 			Start: i,
 			End:   end,
-			Meta:  map[string]interface{}{},
+			Meta:  map[string]any{},
 		})
 	}
 

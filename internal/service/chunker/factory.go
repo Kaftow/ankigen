@@ -2,10 +2,11 @@ package chunker
 
 import (
 	"ankigen/internal/service/chunker/impl"
+	"ankigen/internal/service/chunker/types"
 	"fmt"
 )
 
-func CreateChunker(cfg ChunkConfig) (Chunker, error) {
+func CreateChunker(cfg types.ChunkConfig) (types.Chunker, error) {
 	switch cfg.Strategy {
 
 	case "fixedLength":
