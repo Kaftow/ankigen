@@ -18,10 +18,11 @@ type PandocExtractor struct {
 
 // NewPandocExtractor returns a new PandocExtractor.
 func NewPandocExtractor() *PandocExtractor {
-	pandocPath := tools.PandocPath()
+	pandocPath := pandoc.PandocPath()
 	if pandocPath == "" {
 		log.Printf("pandoc not found in PATH")
 	}
+	log.Printf("Using pandoc at: %s", pandocPath)
 	return &PandocExtractor{
 		PandocPath: pandocPath,
 	}
