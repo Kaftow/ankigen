@@ -6,10 +6,8 @@ require (
 	github.com/gen2brain/go-fitz v1.24.15
 	github.com/google/uuid v1.6.0
 	github.com/pkoukk/tiktoken-go v0.1.8
-	github.com/saintfish/chardet v0.0.0-20230101081208-5e3ef4b5456d
 	github.com/sbt-zyq/tiktoken-go-loader v1.0.0
 	github.com/wailsapp/wails/v2 v2.10.2
-	golang.org/x/text v0.23.0
 )
 
 require (
@@ -41,6 +39,7 @@ require (
 	golang.org/x/crypto v0.36.0 // indirect
 	golang.org/x/net v0.37.0 // indirect
 	golang.org/x/sys v0.33.0 // indirect
+	golang.org/x/text v0.23.0 // indirect
 )
 
 // replace github.com/wailsapp/wails/v2 v2.10.2 => /home/kaftow/go/pkg/mod

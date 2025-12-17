@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"path/filepath"
+	"sort"
 	"sync"
 )
 
@@ -39,12 +40,8 @@ func (m *ExtractorService) RegisterAll() {
 	m.mu.Lock()
 	defer m.mu.Unlock()
 	extractors := []Extractor{
-		NewTXTExtractor(),
+		NewPandocExtractor(),
 		NewPDFExtractor(),
-		NewDocxExtractor(),
-		NewPptxExtractor(),
-		NewHTMLExtractor(),
-		NewEPUBExtractor(),
 	}
 	for _, e := range extractors {
 		for _, ext := range e.SupportedExtensions() {
@@ -53,7 +50,7 @@ func (m *ExtractorService) RegisterAll() {
 	}
 }
 
-// SupportedExtensions returns a deduplicated slice of all supported extensions.
+// SupportedExtensions returns a sorted slice of all supported extensions.
 func (m *ExtractorService) SupportedExtensions() []string {
 	m.mu.RLock()
 	defer m.mu.RUnlock()
@@ -61,6 +58,7 @@ func (m *ExtractorService) SupportedExtensions() []string {
 	for ext := range m.extractors {
 		result = append(result, ext)
 	}
+	sort.Strings(result)
 	return result
 }
 
