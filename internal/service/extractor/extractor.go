@@ -44,6 +44,7 @@ func (m *ExtractorService) RegisterAll() {
 		NewDocxExtractor(),
 		NewPptxExtractor(),
 		NewHTMLExtractor(),
+		NewEPUBExtractor(),
 	}
 	for _, e := range extractors {
 		for _, ext := range e.SupportedExtensions() {
