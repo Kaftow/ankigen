@@ -41,7 +41,7 @@ func (m *ExtractorService) RegisterAll() {
 	extractors := []Extractor{
 		NewTXTExtractor(),
 		NewPDFExtractor(),
-		// NewDocxExtractor(),
+		NewDocxExtractor(),
 		// NewHTMLExtractor(),
 		// NewMarkdownExtractor()
 	}
