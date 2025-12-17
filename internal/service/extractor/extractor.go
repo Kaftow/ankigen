@@ -42,8 +42,7 @@ func (m *ExtractorService) RegisterAll() {
 		NewTXTExtractor(),
 		NewPDFExtractor(),
 		NewDocxExtractor(),
-		// NewHTMLExtractor(),
-		// NewMarkdownExtractor()
+		NewPptxExtractor(),
 	}
 	for _, e := range extractors {
 		for _, ext := range e.SupportedExtensions() {
