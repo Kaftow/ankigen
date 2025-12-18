@@ -40,6 +40,7 @@ func (m *ExtractorService) RegisterAll() {
 	m.mu.Lock()
 	defer m.mu.Unlock()
 	extractors := []Extractor{
+		NewTXTExtractor(),
 		NewPandocExtractor(),
 		NewPDFExtractor(),
 	}

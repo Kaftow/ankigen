@@ -31,7 +31,6 @@ func NewPandocExtractor() *PandocExtractor {
 // SupportedExtensions returns all supported file extensions.
 func (PandocExtractor) SupportedExtensions() []string {
 	return []string{
-		".txt", ".md",
 		".docx",
 		".pptx",
 		".html", ".htm",
@@ -75,8 +74,6 @@ func (e *PandocExtractor) Extract(path string) (string, error) {
 // extensionToPandocFormat maps file extensions to Pandoc input formats.
 func (e *PandocExtractor) extensionToPandocFormat(ext string) string {
 	switch ext {
-	case ".txt", ".md":
-		return "markdown"
 	case ".docx":
 		return "docx"
 	case ".pptx":
