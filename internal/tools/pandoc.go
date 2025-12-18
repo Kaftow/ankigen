@@ -21,19 +21,21 @@ func relativePath() string {
 
 	switch osType {
 	case "linux":
-		if arch == "amd64" {
-			return "pandoc-3.8.3-linux-amd64/bin/pandoc"
-		} else if arch == "arm64" {
-			return "pandoc-3.8.3-linux-arm64/bin/pandoc"
-		} else {
+		switch arch {
+		case "amd64":
+			return "pandoc-3.8.3-linux-amd64/pandoc"
+		case "arm64":
+			return "pandoc-3.8.3-linux-arm64/pandoc"
+		default:
 			return ""
 		}
 	case "darwin":
-		if arch == "amd64" {
-			return "pandoc-3.8.3-x86_64-macOS/bin/pandoc"
-		} else if arch == "arm64" {
-			return "pandoc-3.8.3-arm64-macOS/bin/pandoc"
-		} else {
+		switch arch {
+		case "amd64":
+			return "pandoc-3.8.3-x86_64-macOS/pandoc"
+		case "arm64":
+			return "pandoc-3.8.3-arm64-macOS/pandoc"
+		default:
 			return ""
 		}
 	case "windows":
