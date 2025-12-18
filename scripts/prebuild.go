@@ -5,12 +5,38 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"runtime"
 )
 
 // This script is a Wails prebuild hook.
 // It copies all files from the local "pandoc" directory in the project root
 // to "build/bin/pandoc/", so the built application can access Pandoc binaries.
 // If the target directory exists, it will be cleared first.
+
+func getBinaryFolder() string {
+	osType := runtime.GOOS
+	arch := runtime.GOARCH
+
+	switch osType {
+	case "linux":
+		switch arch {
+		case "amd64":
+			return "pandoc-3.8.3-linux-amd64"
+		case "arm64":
+			return "pandoc-3.8.3-linux-arm64"
+		}
+	case "darwin":
+		switch arch {
+		case "amd64":
+			return "pandoc-3.8.3-x86_64-macOS"
+		case "arm64":
+			return "pandoc-3.8.3-arm64-macOS"
+		}
+	case "windows":
+		return "pandoc-3.8.3-windows-x86_64"
+	}
+	return ""
+}
 
 func main() {
 	// Get current working directory (assumed to be project root)
@@ -20,8 +46,15 @@ func main() {
 		os.Exit(1)
 	}
 
-	srcDir := filepath.Join(rootDir, "pandoc")            // source pandoc directory
-	dstDir := filepath.Join(rootDir, "build", "bin", "pandoc") // target build directory
+	binaryFolder := getBinaryFolder()
+
+	if binaryFolder == "" {
+		fmt.Fprintf(os.Stderr, "Unsupported OS/Architecture: %s/%s\n", runtime.GOOS, runtime.GOARCH)
+		os.Exit(1)
+	}
+
+	srcDir := filepath.Join(rootDir, "pandoc", binaryFolder)                 // source pandoc binary directory
+	dstDir := filepath.Join(rootDir, "build", "bin", "pandoc", binaryFolder) // target build directory
 
 	// Remove target directory if it exists
 	os.RemoveAll(dstDir)
