@@ -68,7 +68,31 @@ func (e *PandocExtractor) Extract(path string) (string, error) {
 	}
 
 	result := strings.TrimSpace(stdout.String())
+
+	if ext == ".pptx" {
+		result = addSlideSeparators(result)
+	}
+	
 	return result, nil
+}
+
+// Add horizontal rules between slides in PPTX markdown.
+func addSlideSeparators(md string) string {
+	lines := strings.Split(md, "\n")
+	var out []string
+	firstSlide := true
+
+	for _, line := range lines {
+		if strings.HasPrefix(line, "## ") {
+			if !firstSlide {
+				out = append(out, "---")
+			}
+			firstSlide = false
+		}
+		out = append(out, line)
+	}
+
+	return strings.Join(out, "\n")
 }
 
 // extensionToPandocFormat maps file extensions to Pandoc input formats.
