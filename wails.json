@@ -6,6 +6,11 @@
   "frontend:build": "npm run build",
   "frontend:dev:watcher": "npm run dev",
   "frontend:dev:serverUrl": "auto",
+  "preBuildHooks": {
+    "linux/*": "bash -c 'cd ../../ && go run ./scripts/prebuild.go'",
+    "darwin/*": "bash -c 'cd ../../ && go run ./scripts/prebuild.go'",
+    "windows/*": "cmd /c cd ../.. && go run .\\scripts\\prebuild.go"
+  },
   "author": {
     "name": "Kaftow",
     "email": "166228791+Kaftow@users.noreply.github.com"
