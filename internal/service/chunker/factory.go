@@ -4,29 +4,35 @@ import (
 	"ankigen/internal/service/chunker/impl"
 	"ankigen/internal/service/chunker/types"
 	"fmt"
+	"github.com/mitchellh/mapstructure"
 )
+
+type TokenParams struct {
+	MaxTokens    int    `mapstructure:"maxTokens"`
+	EncodingName string `mapstructure:"encodingName"`
+}
+
+type FixedLengthParams struct {
+	MaxChars int `mapstructure:"maxChars"`
+}
 
 func CreateChunker(cfg types.ChunkConfig) (types.Chunker, error) {
 	switch cfg.Strategy {
-
 	case "fixedLength":
-		maxChars, ok := cfg.Params["maxChars"].(int)
-		if !ok {
-			return nil, fmt.Errorf("invalid maxChars param")
+		var params FixedLengthParams
+		if err := mapstructure.Decode(cfg.Params, &params); err != nil {
+			return nil, fmt.Errorf("invalid fixedLength params: %w", err)
 		}
-		return impl.NewFixedLengthChunker(maxChars), nil
+		return impl.NewFixedLengthChunker(params.MaxChars), nil
+
 	case "token":
-		maxTokens, ok := cfg.Params["maxTokens"].(int)
-		if !ok {
-			return nil, fmt.Errorf("invalid maxToken param")
+		var params TokenParams
+		if err := mapstructure.Decode(cfg.Params, &params); err != nil {
+			return nil, fmt.Errorf("invalid token params: %w", err)
 		}
-		encodingName, ok := cfg.Params["encodingName"].(string)
-		if !ok {
-			return nil, fmt.Errorf("invalid encodingName param")
-		}
-		return impl.NewTokenChunker(maxTokens, encodingName)
+		return impl.NewTokenChunker(params.MaxTokens, params.EncodingName)
 
+	default:
+		return nil, fmt.Errorf("unsupported strategy: %s", cfg.Strategy)
 	}
-
-	return nil, fmt.Errorf("unsupported strategy: %s", cfg.Strategy)
 }

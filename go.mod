@@ -5,6 +5,7 @@ go 1.24.0
 require (
 	github.com/gen2brain/go-fitz v1.24.15
 	github.com/google/uuid v1.6.0
+	github.com/mitchellh/mapstructure v1.5.0
 	github.com/pkoukk/tiktoken-go v0.1.8
 	github.com/saintfish/chardet v0.0.0-20230101081208-5e3ef4b5456d
 	github.com/sbt-zyq/tiktoken-go-loader v1.0.0
