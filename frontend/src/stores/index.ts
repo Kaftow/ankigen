@@ -12,3 +12,4 @@ export default pinia;
 export { useFileStore } from "./modules/fileStore";
 export { useWorkflowStore } from "./modules/workflowStore";
 export { useMdBlockStore } from "./modules/mdBlockStore";
+export { useChunkerConfigStore } from "./modules/chunkConfigStore";

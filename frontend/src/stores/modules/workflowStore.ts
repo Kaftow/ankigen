@@ -6,7 +6,7 @@ export type StepKey = string;
 
 export const useWorkflowStore = defineStore("workflow", () => {
   // ordered steps
-  const steps = ref<StepKey[]>(["fileLoader", "textEditor"]);
+  const steps = ref<StepKey[]>(["fileLoader", "textEditor", "textChunker"]);
 
   // current step index
   const currentIndex = ref(0);
