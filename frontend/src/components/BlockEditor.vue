@@ -3,11 +3,14 @@ import { ref, nextTick, onMounted, onUnmounted, watch, computed } from "vue";
 import { useMdBlockStore } from "@/stores";
 import draggable from "vuedraggable";
 import { marked } from "marked";
-import { NDropdown } from "naive-ui";
+import { NDropdown, useDialog, NButton } from "naive-ui";
 
 // Get the markdown block store for managing text blocks
 const blockStore = useMdBlockStore();
 const blocks = blockStore.blocks;
+
+// Initialize dialog for unified confirmation dialogs
+const dialog = useDialog();
 
 // Store references to textarea elements for cursor manipulation and auto-sizing
 const textAreaRefs = ref<(HTMLTextAreaElement | null)[]>([]);
@@ -133,6 +136,20 @@ function handleMenuSelect(key: string) {
   }
 }
 
+// Clear all blocks with confirmation dialog
+function clearAllBlocks() {
+  if (blocks.length === 0) return;
+  dialog.warning({
+    title: "Clear All Blocks",
+    content: `Are you sure you want to clear all ${blocks.length} block${blocks.length !== 1 ? "s" : ""}? This action cannot be undone.`,
+    positiveText: "Clear",
+    negativeText: "Cancel",
+    onPositiveClick: () => {
+      blockStore.clearBlocks();
+    },
+  });
+}
+
 // Close context menu when clicking elsewhere on the document
 const handleDocumentClick = () => {
   contextMenu.value.show = false;
@@ -156,6 +173,20 @@ onUnmounted(() => {
     @clickoutside="contextMenu.show = false"
     @select="handleMenuSelect"
   />
+  <!-- Header with block counter and clear button -->
+  <div class="editor-header">
+    <span class="block-counter"
+      >{{ blocks.length }} block{{ blocks.length !== 1 ? "s" : "" }}</span
+    >
+    <button
+      v-if="blocks.length > 0"
+      class="clear-btn"
+      @click="clearAllBlocks"
+      title="Clear all blocks"
+    >
+      Clear All
+    </button>
+  </div>
   <!-- Main editor table with split-pane layout -->
   <table class="block-table">
     <!-- Draggable list of markdown blocks -->
@@ -192,6 +223,44 @@ onUnmounted(() => {
 </template>
 
 <style scoped>
+/* Editor header with block counter and controls */
+.editor-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  background-color: #f5f5f5;
+  border-bottom: 1px solid #e0e0e0;
+  margin-bottom: 8px;
+}
+
+/* Block counter display */
+.block-counter {
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+}
+
+/* Clear all blocks button */
+.clear-btn {
+  padding: 6px 12px;
+  background-color: #ff6b6b;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.clear-btn:hover {
+  background-color: #ff5252;
+}
+
+.clear-btn:active {
+  background-color: #e64545;
+}
+
 /* Main editor table styling */
 .block-table {
   width: 100%;

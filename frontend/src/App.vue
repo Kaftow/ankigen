@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { NLayout, NLayoutContent } from "naive-ui";
+import { NLayout, NLayoutContent, NDialogProvider } from "naive-ui";
 import StepNavigator from "./components/StepNavigator.vue";
 import { useWorkflowStore } from "@/stores";
 import { useRouter } from "vue-router";
@@ -27,18 +27,20 @@ function onPrev() {
 </script>
 
 <template>
-  <n-layout class="page-container">
-    <n-layout-content class="page-content">
-      <router-view />
-    </n-layout-content>
-    <step-navigator
-      :canNext="canNext"
-      @next="onNext"
-      @prev="onPrev"
-      :showPrev="showPrev"
-      :showNext="showNext"
-    />
-  </n-layout>
+  <n-dialog-provider>
+    <n-layout class="page-container">
+      <n-layout-content class="page-content">
+        <router-view />
+      </n-layout-content>
+      <step-navigator
+        :canNext="canNext"
+        @next="onNext"
+        @prev="onPrev"
+        :showPrev="showPrev"
+        :showNext="showNext"
+      />
+    </n-layout>
+  </n-dialog-provider>
 </template>
 
 <style scoped>
