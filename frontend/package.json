@@ -9,11 +9,13 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "marked": "^17.0.1",
     "md-editor-v3": "^6.2.0",
     "naive-ui": "^2.43.1",
     "pinia": "^3.0.4",
     "vue": "^3.2.37",
     "vue-router": "^4.6.3",
+    "vuedraggable": "^4.1.0",
     "zod": "^4.2.1"
   },
   "devDependencies": {

@@ -1,12 +1,35 @@
 <script setup lang="ts">
 import { NCard } from "naive-ui";
+import { computed, watchEffect } from "vue";
 import ChunkingStrategyConfig from "@/components/ChunkingStrategyConfig.vue";
-import ChunkEditor from "@/components/ChunkEditor.vue";
-import { useFileStore, useMdBlockStore, useChunkerConfigStore } from "@/stores";
+import BlockEditor from "@/components/BlockEditor.vue";
+import {
+  useFileStore,
+  useMdBlockStore,
+  useChunkerConfigStore,
+  useWorkflowStore,
+} from "@/stores";
 
 const fileStore = useFileStore();
 const mdBlockStore = useMdBlockStore();
 const chunkerStore = useChunkerConfigStore();
+const workflowStore = useWorkflowStore();
+
+const isBlockEmpty = computed(() => !mdBlockStore.hasBlocks);
+
+// Mark step completed when raw content is non-empty
+watchEffect(() => {
+  const stepCompleted = workflowStore.isStepCompleted;
+
+  // Only mark step completed if not already completed and content is non-empty
+  if (!stepCompleted && !isBlockEmpty.value) {
+    workflowStore.setStepCompleted(true);
+  }
+  // Unmark step completed if blocks become empty
+  if (stepCompleted && isBlockEmpty.value) {
+    workflowStore.setStepCompleted(false);
+  }
+});
 
 const handleChunk = async () => {
   if (!chunkerStore.currentStrategy) return;
@@ -30,7 +53,7 @@ const handleChunk = async () => {
     </div>
     <div v-else class="editor-wrap">
       <n-card title="Chunking Preview">
-        <ChunkEditor />
+        <BlockEditor />
       </n-card>
     </div>
   </div>
