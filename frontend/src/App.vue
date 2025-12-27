@@ -30,7 +30,9 @@ function onPrev() {
   <n-message-provider>
     <n-dialog-provider>
       <div class="page-root">
-        <div class="page-header"></div>
+        <div class="page-header">
+          <h1 class="page-title">{{ workflow.pageTitle }}</h1>
+        </div>
 
         <n-scrollbar class="page-scroll">
           <router-view />
@@ -51,6 +53,13 @@ function onPrev() {
 </template>
 
 <style scoped>
+@font-face {
+  font-family: "Montserrat";
+  src: url("@/assets/fonts/Montserrat-SemiBold.woff2") format("woff2");
+  font-weight: 600;
+  font-display: swap;
+}
+
 .page-root {
   height: 100vh;
   display: flex;
@@ -60,13 +69,19 @@ function onPrev() {
 }
 
 .page-header {
-  flex-shrink: 0;
-  width: 100%;
-  min-height: 60px;
+  background-color: #fff;
+  padding: 24px 32px;
+  border-bottom: 1px solid #e5e7eb;
   display: flex;
   align-items: center;
-  background-color: #fff;
-  border-bottom: 1px solid #e0e0e0;
+}
+
+.page-title {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 600;
+  color: #1f2937;
+  font-family: "Montserrat", sans-serif;
 }
 
 .page-scroll {

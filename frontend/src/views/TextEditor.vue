@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, watchEffect } from "vue";
+import { computed, watchEffect, onMounted } from "vue";
 import PageEditor from "@/components/PageEditor.vue";
 import { useFileStore, useWorkflowStore } from "@/stores";
 import { useNotification } from "@/composables/useNotification";
@@ -7,6 +7,10 @@ import { useNotification } from "@/composables/useNotification";
 const fileStore = useFileStore();
 const workflowStore = useWorkflowStore();
 const { showWarning, showInfo } = useNotification();
+
+onMounted(() => {
+  workflowStore.setPageTitle("Text Editor");
+});
 
 // Mark step completed when edited content is non-empty
 watchEffect(() => {
