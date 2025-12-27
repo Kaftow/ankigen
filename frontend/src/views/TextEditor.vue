@@ -2,9 +2,11 @@
 import { computed, watchEffect } from "vue";
 import PageEditor from "@/components/PageEditor.vue";
 import { useFileStore, useWorkflowStore } from "@/stores";
+import { useNotification } from "@/composables/useNotification";
 
 const fileStore = useFileStore();
 const workflowStore = useWorkflowStore();
+const { showWarning, showInfo } = useNotification();
 
 // Mark step completed when edited content is non-empty
 watchEffect(() => {
@@ -24,12 +26,14 @@ const editorContent = computed<string>({
   set(value: string) {
     if (!value) {
       // Remove file when empty and notify parent that "next" is disabled
+      showWarning("Content cleared");
       fileStore.clearFile();
       return;
     }
     if (fileStore.editedContent) {
       fileStore.editedContent = value;
     } else {
+      showInfo("Starting to edit content...");
       fileStore.editedContent = value;
     }
   },

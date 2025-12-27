@@ -12,8 +12,10 @@ import {
   NSpace,
 } from "naive-ui";
 import { useChunkerConfigStore } from "@/stores";
+import { useNotification } from "@/composables/useNotification";
 
 const chunkerStore = useChunkerConfigStore();
+const { showError, showInfo } = useNotification();
 
 const emit = defineEmits<{
   (e: "chunk"): void;
@@ -29,7 +31,9 @@ const strategyOptions = computed(() => {
         }))
       : [];
   } catch (e) {
-    console.error("Error getting strategies:", e);
+    showError(
+      `Error getting strategies: ${e instanceof Error ? e.message : "Unknown error"}`,
+    );
     return [];
   }
 });
@@ -44,15 +48,18 @@ const onStrategyChange = () => {
         chunkerStore.currentParams[param.name] = param.default;
       });
     }
+    showInfo(`Strategy changed to: ${chunkerStore.currentStrategy}`);
   } catch (e) {
-    console.error("Error changing strategy:", e);
+    showError(
+      `Error changing strategy: ${e instanceof Error ? e.message : "Unknown error"}`,
+    );
   }
 };
 
 const handleChunk = () => {
   try {
     if (!chunkerStore.currentStrategy) {
-      console.error("No strategy selected, cannot chunk");
+      showError("No strategy selected, cannot chunk");
       return;
     }
 
@@ -62,14 +69,14 @@ const handleChunk = () => {
     );
 
     if (!isValid_) {
-      console.error("Invalid parameters, cannot chunk");
+      showError("Invalid parameters, cannot chunk");
       return;
     }
-
     emit("chunk");
-    console.log("Chunk executed");
   } catch (e) {
-    console.error("Chunk error:", e);
+    showError(
+      `Chunk error: ${e instanceof Error ? e.message : "Unknown error"}`,
+    );
   }
 };
 </script>

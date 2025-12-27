@@ -1,13 +1,15 @@
 <script setup lang="ts">
-import { ref, nextTick, onMounted, onUnmounted, watch, computed } from "vue";
+import { ref, nextTick, onUnmounted } from "vue";
 import { useMdBlockStore } from "@/stores";
 import draggable from "vuedraggable";
 import { marked } from "marked";
-import { NDropdown, useDialog, NButton } from "naive-ui";
+import { NDropdown, useDialog } from "naive-ui";
+import { useNotification } from "@/composables/useNotification";
 
 // Get the markdown block store for managing text blocks
 const blockStore = useMdBlockStore();
 const blocks = blockStore.blocks;
+const { showSuccess } = useNotification();
 
 // Initialize dialog for unified confirmation dialogs
 const dialog = useDialog();
@@ -146,6 +148,9 @@ function clearAllBlocks() {
     negativeText: "Cancel",
     onPositiveClick: () => {
       blockStore.clearBlocks();
+      showSuccess(
+        `Cleared ${blocks.length} block${blocks.length !== 1 ? "s" : ""}`,
+      );
     },
   });
 }

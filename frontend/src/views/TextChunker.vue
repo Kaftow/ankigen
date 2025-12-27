@@ -9,11 +9,13 @@ import {
   useChunkerConfigStore,
   useWorkflowStore,
 } from "@/stores";
+import { useNotification } from "@/composables/useNotification";
 
 const fileStore = useFileStore();
 const mdBlockStore = useMdBlockStore();
 const chunkerStore = useChunkerConfigStore();
 const workflowStore = useWorkflowStore();
+const { showError, showSuccess, showInfo } = useNotification();
 
 const isBlockEmpty = computed(() => !mdBlockStore.hasBlocks);
 
@@ -32,18 +34,29 @@ watchEffect(() => {
 });
 
 const handleChunk = async () => {
-  if (!chunkerStore.currentStrategy) return;
-
-  if (!fileStore.editedContent) {
-    console.error("No content to chunk");
+  if (!chunkerStore.currentStrategy) {
+    showError("Please select a chunking strategy first");
     return;
   }
 
-  await mdBlockStore.fetchChunks(
-    fileStore.editedContent,
-    chunkerStore.currentStrategy,
-    chunkerStore.currentParams,
-  );
+  if (!fileStore.editedContent) {
+    showError("No content to chunk");
+    return;
+  }
+
+  try {
+    showInfo("Starting chunking process...");
+    await mdBlockStore.fetchChunks(
+      fileStore.editedContent,
+      chunkerStore.currentStrategy,
+      chunkerStore.currentParams,
+    );
+    showSuccess("Chunking completed successfully");
+  } catch (e) {
+    showError(
+      `Chunking failed: ${e instanceof Error ? e.message : "Unknown error"}`,
+    );
+  }
 };
 </script>
 <template>
