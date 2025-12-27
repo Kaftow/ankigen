@@ -1,11 +1,19 @@
 <script setup lang="ts">
 import { computed, onMounted } from "vue";
 import { useFileStore } from "@/stores";
+import { useNotification } from "@/composables/useNotification";
 
 const fileStore = useFileStore();
+const { showError } = useNotification();
 
 onMounted(() => {
-  fileStore.loadSupportedFormats();
+  try {
+    fileStore.loadSupportedFormats();
+  } catch (e) {
+    showError(
+      `Failed to load supported formats: ${e instanceof Error ? e.message : "Unknown error"}`,
+    );
+  }
 });
 
 const options = computed(() =>

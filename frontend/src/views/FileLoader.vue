@@ -4,9 +4,11 @@ import FileEmptyCard from "@/components/FileEmptyCard.vue";
 import FilePicker from "@/components/FilePicker.vue";
 import PageEditor from "@/components/PageEditor.vue";
 import { useFileStore, useWorkflowStore } from "@/stores";
+import { useNotification } from "@/composables/useNotification";
 
 const fileStore = useFileStore();
 const workflowStore = useWorkflowStore();
+const { showError, showSuccess } = useNotification();
 
 const isEmpty = computed(() => !fileStore.hasFile);
 
@@ -22,13 +24,14 @@ watchEffect(() => {
 });
 
 function onFileLoaded(payload: { filename?: string; content?: string } | null) {
-  console.log("File loaded:", payload);
   if (!payload?.content || !payload?.filename) {
     fileStore.clearFile();
+    showError("File load failed: No content or filename");
     return;
   }
   fileStore.filename = payload.filename;
   fileStore.rawContent = payload.content;
+  showSuccess(`File loaded: ${payload.filename}`);
 }
 
 const readOnlyContent = computed<string>(() => fileStore.rawContent ?? "");
