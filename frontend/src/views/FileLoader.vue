@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, watchEffect } from "vue";
+import { computed, watchEffect, onMounted } from "vue";
 import FileEmptyCard from "@/components/FileEmptyCard.vue";
 import FilePicker from "@/components/FilePicker.vue";
 import PageEditor from "@/components/PageEditor.vue";
@@ -9,6 +9,10 @@ import { useNotification } from "@/composables/useNotification";
 const fileStore = useFileStore();
 const workflowStore = useWorkflowStore();
 const { showError, showSuccess } = useNotification();
+
+onMounted(() => {
+  workflowStore.setPageTitle("File Loading");
+});
 
 const isEmpty = computed(() => !fileStore.hasFile);
 

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { NCard } from "naive-ui";
-import { computed, watchEffect } from "vue";
+import { computed, watchEffect, onMounted } from "vue";
 import ChunkingStrategyConfig from "@/components/ChunkingStrategyConfig.vue";
 import BlockEditor from "@/components/BlockEditor.vue";
 import {
@@ -16,6 +16,10 @@ const mdBlockStore = useMdBlockStore();
 const chunkerStore = useChunkerConfigStore();
 const workflowStore = useWorkflowStore();
 const { showError, showSuccess, showInfo } = useNotification();
+
+onMounted(() => {
+  workflowStore.setPageTitle("Text Chunking");
+});
 
 const isBlockEmpty = computed(() => !mdBlockStore.hasBlocks);
 

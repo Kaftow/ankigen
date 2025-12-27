@@ -21,9 +21,14 @@ export const useWorkflowStore = defineStore("workflow", () => {
   );
 
   const isStepCompleted = ref(false);
+  const pageTitle = ref<string>("");
 
   function setStepCompleted(v: boolean) {
     isStepCompleted.value = v;
+  }
+
+  function setPageTitle(title: string) {
+    pageTitle.value = title;
   }
 
   // navigation
@@ -55,6 +60,8 @@ export const useWorkflowStore = defineStore("workflow", () => {
     isLastStep,
     isStepCompleted,
     setStepCompleted,
+    pageTitle,
+    setPageTitle,
     reset,
   };
 });
